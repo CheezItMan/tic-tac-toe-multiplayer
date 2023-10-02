@@ -1,16 +1,16 @@
 import { Option } from "fp-ts/Option";
 
-type Player = 'X' | 'O';
+export type Player = 'X' | 'O';
 
 type Coordinate = 1 | 2 | 3;
 
-type Coordinates = { row: Coordinate, col: Coordinate };
+type Coordinates = { row: Coordinate, column: Coordinate };
 
 type CellState = { kind: 'Playable' } | { kind: 'Played', player: Player };
 
 type Cell = Coordinates & { state: CellState };
 
-type Board = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell]
+export type Board = [Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell, Cell]
 
 type ResultType = 
   | 'Draw'
@@ -23,14 +23,19 @@ type ResultType =
   | 'Diagonal1'
   | 'Diagonal2';
 
-type Result = { type: Extract<ResultType, 'Draw'> } | { type: Exclude<ResultType, 'Draw'>, player: Player};
+export type Result = { type: Extract<ResultType, 'Draw'> } | { type: Exclude<ResultType, 'Draw'>, player: Player};
 
 export type GameEvent =
+  | SetupDoneEvent
   | PlayedEvent
   | RestartedEvent;
 
 export type RestartedEvent = { type: 'Restarted' };
-export type PlayedEvent = { type: 'Played', payload: Coordinates };
+export type SetupDoneEvent = { type: 'SETUP_DONE'}
+export type PlayedEvent = {
+  type: 'PLAYED' | 'PLAYER_SETUP' |  'RESTARTED',
+  payload: Coordinates 
+};
 
 export type Context =
     {
@@ -43,8 +48,9 @@ export type MatchScore = Record<ResultType, Option<{ player: Player, count: numb
 
 export type Scheme = {
     states: {
-        x: {},
-        o: {},
+        PLAYER_SETUP: {},
+        X: {},
+        O: {},
         DONE: {},
     };
 };
